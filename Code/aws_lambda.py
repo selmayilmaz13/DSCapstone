@@ -26,9 +26,7 @@ client = OpenAI(api_key=api_key)
 
 
 def load_datasets_from_s3(bucket_name: str):
-    """
-    Load the raw skills dataset and the scored job-level feature dataset from S3.
-    """
+    """Pulls the skills and scored feature datasets from S3."""
     skills_obj = s3.get_object(Bucket=bucket_name, Key=SKILLS_KEY)
     skills_df = pd.read_csv(StringIO(skills_obj["Body"].read().decode("utf-8")))
 
@@ -39,9 +37,7 @@ def load_datasets_from_s3(bucket_name: str):
 
 
 def llm_find_matches(input_title: str, skills_df: pd.DataFrame):
-    """
-    Use the LLM to map a user-entered job title to 1-5 official occupations.
-    """
+    """Uses the LLM to find up to 5 official occupations that match the user's input."""
     job_titles = (
         skills_df["2024 National Employment Matrix title"]
         .astype(str)
@@ -87,11 +83,8 @@ Occupations:
 
 
 def build_job_info(input_title: str, matches, skills_df: pd.DataFrame):
-    """
-    Build a detailed job info structure from the raw skills dataset.
-    Expects matches as a list of dicts:
-    [{"job_title": "...", "similarity": 1.0}, ...]
-    """
+    """Creates a detailed job profile from the skills dataset based on the matched titles. 
+    Expects matches to be a list of dictionaries with the job title and similarity score."""
     result = {
         "input_job_title": input_title,
         "matches": []
@@ -136,9 +129,7 @@ def build_job_info(input_title: str, matches, skills_df: pd.DataFrame):
 
 
 def get_scored_match(best_match_title: str, scored_df: pd.DataFrame):
-    """
-    Retrieve the structured automation-risk result for the matched occupation.
-    """
+    """Gets the automation risk scores and details for the matched job."""
     row = scored_df[
         scored_df["2024_national_employment_matrix_title"] == best_match_title
     ]

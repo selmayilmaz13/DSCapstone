@@ -2,17 +2,13 @@ import pandas as pd
 
 
 def load_skills_data(csv_path: str) -> pd.DataFrame:
-    """
-    Load the public skills dataset from CSV.
-    """
+    """Loads the public skills dataset from a CSV file."""
     df = pd.read_csv(csv_path)
     return df
 
 
 def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Standardize column names so they are easier to work with in code.
-    """
+    """Cleans up column names to make them easier to use in the code."""
     df = df.copy()
     df.columns = (
         df.columns.str.strip()
@@ -34,13 +30,7 @@ def clean_feature_names(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def build_job_feature_table(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Build one row per occupation with:
-    - employment summary columns
-    - aggregate statistics on O*NET data values
-    - pivoted EP skill features
-    - pivoted O*NET element features
-    """
+    """Creates a single row per occupation that includes employment summaries, O*NET statistics, and pivoted skill features."""
     df = clean_column_names(df)
 
     occupation_col = "2024_national_employment_matrix_title"
@@ -106,9 +96,7 @@ def build_job_feature_table(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_features_for_job(job_title: str, job_features_df: pd.DataFrame) -> pd.Series:
-    """
-    Return the feature row for a given occupation title.
-    """
+    """Gets the feature row for a specific job title."""
     match = job_features_df[
         job_features_df["2024_national_employment_matrix_title"] == job_title
     ]

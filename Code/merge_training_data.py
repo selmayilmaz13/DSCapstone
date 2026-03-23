@@ -3,10 +3,7 @@ import re
 
 
 def clean_soc_code(value):
-    """
-    Clean SOC codes so both datasets can be merged more easily.
-    Keeps digits and hyphen only.
-    """
+    """Cleans up SOC codes by keeping only digits and hyphens so the datasets are easier to merge."""
     if pd.isna(value):
         return None
 
@@ -21,16 +18,12 @@ def load_job_features(path: str) -> pd.DataFrame:
 
 
 def load_automation_target(path: str) -> pd.DataFrame:
-    """
-    Load the Kaggle automation dataset as Excel.
-    """
+    """Loads the Kaggle automation dataset."""
     return pd.read_csv(path, encoding="latin1")
 
 
 def prepare_automation_target(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Keep only the columns needed for supervised learning.
-    """
+    """Drops extra columns and keeps only what we need for training the model."""
     df = df.copy()
 
     needed_cols = ["SOC", "Occupation", "Probability"]
@@ -43,9 +36,7 @@ def prepare_automation_target(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prepare_job_features_for_merge(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Prepare the engineered O*NET features for merging.
-    """
+    """Preps the engineered O*NET features so they can be merged with the target data."""
     df = df.copy()
 
     title_col = "2024_national_employment_matrix_title"
@@ -64,10 +55,7 @@ def prepare_job_features_for_merge(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def merge_training_data(job_features_df: pd.DataFrame, target_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    First try merging on SOC code.
-    For rows that do not match, fall back to occupation title.
-    """
+    """Tries merging the datasets on SOC code first, and falls back to occupation title if there's no match."""
     merged_soc = job_features_df.merge(
         target_df,
         on="soc_clean",
